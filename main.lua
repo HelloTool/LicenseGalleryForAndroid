@@ -34,7 +34,7 @@ function onOptionsItemSelected(item)
     openChooseALicenseWebsite()
    elseif id==2 then
     showAboutDialog()
-    elseif id==3 then
+   elseif id==3 then
     openInBrowser("https://oschina.gitee.io/opensource-guide/guide/第二部分：学习和使用开源项目/第 3 小节：认识开源许可证/")
   end
 end
@@ -64,7 +64,7 @@ function showAboutDialog()
 开源许可: MIT
 反馈邮箱: jesse205@qq.com
 
-本程序使用 GitHub License API 获取许可证数据。
+使用 GitHub License API 获取许可证数据的，并有序地暂时出来，供用户快速选择的 Android 客户端。
 
 免责声明：
 
@@ -160,11 +160,12 @@ listView.onCreateContextMenu=function(menu,v,menuInfo)
   .setOnMenuItemClickListener(function()
     copyAndToast(itemData.spdx_id)
   end)
+  --[[
   menu.add(0,2,0,"许可证网址")
   .setEnabled(not not itemData.url)
   .setOnMenuItemClickListener(function()
     openInBrowser(itemData.url)
-  end)
+  end)]]
 end
 
 searchButton.onClick=function()
