@@ -1,0 +1,16 @@
+appname="许可证画廊"
+appver="1.0"
+appcode="1"
+appsdk="15"
+path_pattern=""
+packagename="io.github.jesse205.licensegallery"
+theme="Theme_DeviceDefault_Settings"
+app_key=""
+app_channel=""
+developer=""
+description=""
+debugmode=true
+user_permission={
+  "INTERNET",
+  "WRITE_EXTERNAL_STORAGE"
+}
