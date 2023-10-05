@@ -21,7 +21,7 @@
         layout_margin="16dp";
         layout_marginTop="4dp";
         layout_marginBottom="4dp";
-        cardBackgroundColor=Build.VERSION.SDK_INT>=23 and android.res.color.attr.colorBackgroundFloating or 0xFFFFFFFF;
+        cardBackgroundColor=getFloatingBgColor();
         {
           LinearLayout;
           layout_height="wrap";
@@ -69,7 +69,7 @@
         layout_width="fill";
         layout_margin="16dp";
         layout_marginTop="4dp";
-        cardBackgroundColor=Build.VERSION.SDK_INT>=23 and android.res.color.attr.colorBackgroundFloating or 0xFFFFFFFF;
+        cardBackgroundColor=getFloatingBgColor();
         {
           HorizontalScrollView;
         {

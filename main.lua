@@ -3,18 +3,90 @@ import "android.app.*"
 import "android.os.*"
 import "android.widget.*"
 import "android.view.*"
+import "android.text.util.Linkify"
+import "com.onegravity.rteditor.RTEditorMovementMethod"
+
 import "res"
 import "cjson"
-import "helper"
+require "helper"
+require "init"
 
 ---https://docs.github.com/zh/rest/licenses/licenses?apiVersion=2022-11-28#get-all-commonly-used-licenses--status-codes
 URL_API_GITHUB_LICENSES="https://api.github.com/licenses"
+URL_CHOOSEALICENSE="https://choosealicense.com/"
 NAX_AUTO_SEARCH_LIMIT=100
 
 activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN|WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 activity.setContentView(loadlayout("layout"))
 
 local filteringText=""
+
+function onCreateOptionsMenu(menu)
+  menu.add(0,1,0,"选择开源许可证网站")
+  local helpMenu=menu.addSubMenu("帮助")
+  helpMenu.add(0,3,0,"认识开源许可证")
+  menu.add(0,2,0,"关于")
+end
+
+function onOptionsItemSelected(item)
+  local id=item.getItemId()
+  if id==1 then
+    openChooseALicenseWebsite()
+   elseif id==2 then
+    showAboutDialog()
+    elseif id==3 then
+    openInBrowser("https://oschina.gitee.io/opensource-guide/guide/第二部分：学习和使用开源项目/第 3 小节：认识开源许可证/")
+  end
+end
+
+function openChooseALicenseWebsite()
+  openInBrowser(URL_CHOOSEALICENSE)
+end
+
+function showAboutDialog()
+  local dialog=AlertDialog.Builder(this)
+  .setTitle(appname)
+  .setIcon(R.drawable.icon)
+  .setMessage("")
+  .setPositiveButton(android.R.string.ok,nil)
+  --.setNeutralButton("法律信息...",nil)
+  .setNegativeButton("开源仓库",nil)
+  .show()
+
+  local messageView=dialog.findViewById(android.R.id.message)
+  local neutralButton=dialog.getButton(Dialog.BUTTON_NEUTRAL)
+  local negativeButton=dialog.getButton(Dialog.BUTTON_NEGATIVE)
+  messageView.setAutoLinkMask(Linkify.WEB_URLS|Linkify.EMAIL_ADDRESSES)
+  messageView.setTextIsSelectable(true)
+  messageView.setMovementMethod(RTEditorMovementMethod.getInstance())
+  messageView.setText([[
+软件版本: v]]..("%s (%s)"):format(appver,appcode)..[[ 
+开源许可: MIT
+反馈邮箱: jesse205@qq.com
+
+本程序使用 GitHub License API 获取许可证数据。
+
+免责声明：
+
+1. 本软件中的网站、内容与本软件无关。本软件仅作为许可证提供方（GitHub、Choose an open source license）的浏览器使用。
+2. 我们大多数人不是律师。本软件以及网站不提供法律咨询。如果您对代码的最佳许可证或与代码相关的任何其他法律问题有任何疑问，您可以进一步研究或咨询专业人员。
+
+用户协议：
+
+1. 禁止违反当地法律与法规
+
+隐私政策：
+
+1. 本程序只会申请联网权限，其余权限均为默认权限
+2. 本程序不会上传为提供网络服务的信息（如：IP）以外的任何信息。]])
+  --设置为文本后需要取消自动连接，否则会点击重复
+  messageView.setAutoLinkMask(0)
+
+  messageView.requestFocus()
+  negativeButton.onClick=function(view)
+    openInBrowser("https://gitee.com/AideLua/LicenseGallery")
+  end
+end
 
 ---@class LicenseItem
 ---@field key string

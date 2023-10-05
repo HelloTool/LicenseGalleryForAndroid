@@ -1,6 +1,10 @@
-package.path=package.path..activity.getLuaPath("../../lua/?.lua;")
+package.path=package.path
+..activity.getLuaPath("../../?.lua;")
+..activity.getLuaPath("../../lua/?.lua;")
+..activity.getLuaPath("../../?/init.lua;")
+..activity.getLuaPath("../../lua/?/init.lua;")
 
-require "import"
+require "helper"
 import "android.app.*"
 import "android.os.*"
 import "android.widget.*"
@@ -12,19 +16,16 @@ import "java.io.FileWriter"
 
 import "com.onegravity.rteditor.RTEditorMovementMethod"
 
-import "helper"
 import "cjson"
 import "res"
 import "layoutHelper"
 
 licenseName,licenseKey=...
 
-URL_API_GITHUB_LICENSE="https://api.github.com/licenses/%s"
+URL_API_GITHUB_LICENSE_FORMATTER="https://api.github.com/licenses/%s"
 URL_CHOOSEALICENSE="https://choosealicense.com/"
 CODE_EXPORT=1
 
---TODO: i18n
-activity.setTitle(licenseName)
 activity.setContentView(loadlayout("layout"))
 actionBar=activity.getActionBar()
 actionBar.setDisplayHomeAsUpEnabled(true)
@@ -63,56 +64,92 @@ local loading=false
 local loadedMenus=false
 
 function onCreateOptionsMenu(menu)
-  local exportMenu=menu.addSubMenu("导出")
-  exportMenu.add(0,0,0,"导出许可证")
-  exportMenu.add(0,3,0,"复制许可证")
-  local shareMenu=menu.addSubMenu("分享")
-  shareMenu.add(0,1,0,"分享许可证内容")
-  websiteMenu=menu.add(0,2,0,"许可证网址")
+  local exportMenu=menu.addSubMenu(0,ObjIds.export,0,"导出")
+  exportMenu.add(0,ObjIds.exportLicense,0,"导出许可证")
+  exportMenu.add(0,ObjIds.copyLicense,0,"复制许可证")
+  exportMenuItem=menu.findItem(ObjIds.export)
+  
+  local shareMenu=menu.addSubMenu(0,ObjIds.share,0,"分享")
+  shareMenu.add(0,ObjIds.shareLicenseContent,0,"分享许可证内容")
+  shareMenuItem=menu.findItem(ObjIds.share)
+  
+  websiteMenuItem=menu.add(0,ObjIds.licenseWebsite,0,"许可证网址")
   loadedMenus=true
-  refreshMenu()
+  refreshMenus()
 end
 
 function onOptionsItemSelected(item)
   local id=item.getItemId()
   if id==android.R.id.home then
     activity.finish()
-   elseif id==0 then--分享许可证内容
-    local intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
-    intent.addCategory(Intent.CATEGORY_OPENABLE)
-    intent.setType("text/plain")
-    intent.putExtra(Intent.EXTRA_TITLE, "LICENSE.txt")
-    activity.startActivityForResult(intent,CODE_EXPORT)
-   elseif id==1 then--导出许可证
-    local intent = Intent()
-    intent.setAction(Intent.ACTION_SEND)
-    intent.putExtra(Intent.EXTRA_TEXT, licenseData.body)
-    intent.putExtra(Intent.EXTRA_TITLE,licenseData.name)
-    intent.setData(activity.getUriForPath(File(luajava.luadir).getParentFile().getParent().."/images/license.png"))
-    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    activity.startActivity(Intent.createChooser(intent, nil))
-   elseif id==2 then
+   elseif id==ObjIds.shareLicenseContent then--分享许可证内容
+    shareLicense()
+   elseif id==ObjIds.exportLicense then--导出许可证
+    exportLicense()
+   elseif id==ObjIds.licenseWebsite then
     openInBrowser(licenseData.html_url)
-   elseif id==3 then
+   elseif id==ObjIds.copyLicense then
     copyAndToast(licenseData.body)
   end
 end
 
 function onActivityResult(requestCode,resultCode,data)
+  if requestCode==CODE_EXPORT then
+    onExportLicenseResult(requestCode,resultCode,data)
+  end
+end
+
+function onExportLicenseResult(requestCode,resultCode,data)
   if resultCode == Activity.RESULT_OK then
-    if requestCode==CODE_EXPORT then
-      local uri = data.getData()
+    local uri = data.getData()
+    local fileWriter
+    local success=false
+    pcall(function()
       local pfd=activity.getContentResolver().openFileDescriptor(uri, "rwt")
-      local fileWriter=FileWriter(pfd.getFileDescriptor())
+      fileWriter=FileWriter(pfd.getFileDescriptor())
       fileWriter.write(licenseData.body)
+      success=true
+    end)
+    if fileWriter then
       fileWriter.close()
+    end
+    if success then
+      AlertDialog.Builder(this)
+      .setTitle("编辑文件")
+      .setMessage("文件保存成功，您可能需要编辑一些内容（比如版权）。是否调用外部应用以编辑文件？")
+      .setPositiveButton(android.R.string.ok,function()
+        openInOtherApp(uri)
+      end)
+      .setNegativeButton(android.R.string.no,nil)
+      .show()
     end
   end
 end
 
-function refreshMenu()
+function refreshMenus()
   if not loadedMenus return end
-  websiteMenu.setEnabled(not not (not loading and licenseData.html_url))
+  local licenseUsable=not loading
+  exportMenuItem.setEnabled(licenseUsable)
+  shareMenuItem.setEnabled(licenseUsable)
+  websiteMenuItem.setEnabled(not not (licenseUsable and licenseData.html_url))
+end
+
+function exportLicense()
+  local intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+  intent.addCategory(Intent.CATEGORY_OPENABLE)
+  intent.setType("text/plain")
+  intent.putExtra(Intent.EXTRA_TITLE, "LICENSE.txt")
+  activity.startActivityForResult(intent,CODE_EXPORT)
+end
+
+function shareLicense()
+  local intent = Intent()
+  intent.setAction(Intent.ACTION_SEND)
+  intent.putExtra(Intent.EXTRA_TEXT, licenseData.body)
+  intent.putExtra(Intent.EXTRA_TITLE,licenseData.name)
+  intent.setData(activity.getUriForPath(File(luajava.luadir).getParentFile().getParent().."/images/license.png"))
+  intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+  activity.startActivity(Intent.createChooser(intent, nil))
 end
 
 ---@class LicenseDetails
@@ -139,7 +176,7 @@ function setLoading(state)
     progressBar.visibility=View.GONE
     scrollView.visibility=View.VISIBLE
   end
-  refreshMenu()
+  refreshMenus()
 end
 
 ---设置数据
@@ -154,8 +191,8 @@ function setData(data)
   end)
   descriptionView.text=Html.fromHtml(data.description)
   implementationView.text=Html.fromHtml(data.implementation)
-  
-  bodyView.text=data.body
+
+  bodyView.text=data.body:gsub("\n*$",""):gsub("^\n*","")
 
   for index,content in ipairs(data.permissions)
     permissionsLayout.addView(loadlayout(buildTagLayout(tags[content] or content,0xff4caf50),nil,LinearLayout))
@@ -170,7 +207,7 @@ end
 
 ---拉取许可证
 function fetchLicenseDetails()
-  local url=URL_API_GITHUB_LICENSE:format(licenseKey)
+  local url=URL_API_GITHUB_LICENSE_FORMATTER:format(licenseKey)
   if isInternetCacheContent(url) then
     handleLicenseDetails(readInternetCacheContent(url))
    else

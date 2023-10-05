@@ -2,15 +2,11 @@ appname="许可证画廊"
 appver="1.0"
 appcode="1"
 appsdk="15"
-path_pattern=""
 packagename="io.github.jesse205.licensegallery"
+developer="Jesse205"
+description="移动端快速浏览与创建开源许可证的工具。"
 theme="Theme_DeviceDefault_Settings"
-app_key=""
-app_channel=""
-developer=""
-description=""
 debugmode=true
 user_permission={
-  "INTERNET",
-  "WRITE_EXTERNAL_STORAGE"
+  "INTERNET"
 }
