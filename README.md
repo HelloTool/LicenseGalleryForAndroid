@@ -2,7 +2,7 @@
 
 <img src="./icon.png" width="192" height="192" />
 
-使用 GitHub License API 获取许可证数据的，并有序地暂时出来，供用户快速选择的 Android 客户端。
+使用 GitHub License API 获取许可证数据的，并有序地展示出来，供用户快速选择的 Android 客户端。
 
 [![license](https://img.shields.io/github/license/AideLua/LicenseGallery)](LICENSE)
 [![Gitee 发行版](https://img.shields.io/github/v/tag/AideLua/LicenseGallery?color=C71D23&label=发行版&logo=gitee)](https://gitee.com/AideLua/LicenseGallery/releases/latest)
