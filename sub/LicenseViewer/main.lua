@@ -30,7 +30,8 @@ CODE_EXPORT=1
 activity.setContentView(loadlayout("layout"))
 actionBar=activity.getActionBar()
 actionBar.setDisplayHomeAsUpEnabled(true)
---actionBar.setSubtitle("查看许可证")
+activity.setTitle(licenseName)
+actionBar.setSubtitle("查看许可证")
 
 descriptionView.setMovementMethod(RTEditorMovementMethod.getInstance())
 
@@ -44,15 +45,14 @@ local loading=false
 local loadedMenus=false
 
 function onCreateOptionsMenu(menu)
-  local exportMenu=menu.addSubMenu(0,ObjIds.export,0,"导出")
-  exportMenu.add(0,ObjIds.exportLicense,0,"导出许可证")
-  exportMenu.add(0,ObjIds.copyLicense,0,"复制许可证")
-  exportMenuItem=menu.findItem(ObjIds.export)
-  
-  local shareMenu=menu.addSubMenu(0,ObjIds.share,0,"分享")
-  shareMenu.add(0,ObjIds.shareLicenseContent,0,"分享许可证内容")
+  local copyMenu=menu.addSubMenu(0,ObjIds.copy,0,"复制..")
+  copyMenu.add(0,ObjIds.copyLicense,0,"复制许可证")
+  copyMenuItem=menu.findItem(ObjIds.copy)
+
+  local shareMenu=menu.addSubMenu(0,ObjIds.share,0,"分享..")
   shareMenuItem=menu.findItem(ObjIds.share)
-  
+  shareMenu.add(0,ObjIds.shareLicenseContent,0,"分享许可证内容")
+  exportMenuItem=menu.add(0,ObjIds.exportLicense,0,"导出许可证")
   websiteMenuItem=menu.add(0,ObjIds.licenseWebsite,0,"许可证网址")
   loadedMenus=true
   refreshMenus()
@@ -111,6 +111,7 @@ function refreshMenus()
   local licenseUsable=not loading
   exportMenuItem.setEnabled(licenseUsable)
   shareMenuItem.setEnabled(licenseUsable)
+  copyMenuItem.setEnabled(licenseUsable)
   websiteMenuItem.setEnabled(not not (licenseUsable and licenseData.html_url))
 end
 
@@ -138,6 +139,7 @@ end
 ---@field url string api链接
 ---@field node_id string
 ---@field html_url string 网页链接
+---@firld spdx_id string SDPX 名称
 ---@field description string 描述
 ---@field implementation string 使用方法
 ---@field permissions string[] 权限
@@ -169,7 +171,8 @@ function setData(data)
   data.implementation=data.implementation:gsub([[<a(.-)href="/(.-)"(.-)>]],function(start,url,_end)
     return ([[<a%shref="%s%s"%s>]]):format(start,URL_CHOOSEALICENSE,url,_end)
   end)
-  descriptionView.text=Html.fromHtml(translate(data.description))
+  activity.setTitle(data.spdx_id)
+  descriptionView.text=Html.fromHtml((data.description))
   implementationView.text=Html.fromHtml(translate(data.implementation))
 
   bodyView.text=data.body:gsub("\n*$",""):gsub("^\n*","")
