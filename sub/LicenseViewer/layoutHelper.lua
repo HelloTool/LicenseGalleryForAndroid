@@ -30,30 +30,27 @@ function buildTextLayout(text,id)
   };
 end
 
-function buildTagLayout(text,color)
-  return{
+function buildTagsLayout(name,key)
+  return {
     LinearLayout;
-    layout_height="wrap";
-    layout_width="fill";
-    gravity="start|center";
-    layout_marginTop="2dp";
-    layout_marginBottom="2dp";
-    {
-      CardView;
-      layout_height="12dp";
-      layout_width="12dp";
-      layout_marginEnd="4dp";
-      cardBackgroundColor=color;
-      radius="6dp";
-      elevation=0;
-    };
+    layout_height="fill";
+    layout_width=0;
+    layout_weight=1;
+    id=key.."Layout";
+    orientation="vertical";
+    buildTagTitleLayout(name);
+    --contentDescription=name;
+    padding="8dp";
+    focusable=true;
     {
       TextView;
       layout_height="wrap";
       layout_width="fill";
-      text=text;
       textSize="14sp";
-      textIsSelectable=true;
+      --textIsSelectable=true;
+      id=key.."TextView";
+      --focusable=false;
+      lineSpacing={"4dp",1};
       textColor=android.res.color.attr.textColorPrimary;
     };
   };

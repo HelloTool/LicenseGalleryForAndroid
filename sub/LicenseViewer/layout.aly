@@ -22,41 +22,17 @@
         layout_marginTop="4dp";
         layout_marginBottom="4dp";
         cardBackgroundColor=getFloatingBgColor();
+        --contentDescription="权限概览";
         {
           LinearLayout;
           layout_height="wrap";
           layout_width="fill";
-          padding="16dp";
-          paddingBottom="14dp";
-          {
-            LinearLayout;
-            layout_height="wrap";
-            layout_width=0;
-            layout_weight=1;
-            id="permissionsLayout";
-            orientation="vertical";
-            buildTagTitleLayout("权限");
-          };
-          {
-            LinearLayout;
-            layout_height="wrap";
-            layout_width=0;
-            layout_weight=1;
-            id="conditionsLayout";
-            orientation="vertical";
-            layout_marginStart="8dp";
-            buildTagTitleLayout("条件");
-          };
-          {
-            LinearLayout;
-            layout_height="wrap";
-            layout_width=0;
-            layout_weight=1;
-            id="limitationsLayout";
-            layout_marginStart="8dp";
-            orientation="vertical";
-            buildTagTitleLayout("限制");
-          };
+          padding="8dp";
+          paddingBottom="6dp";
+          paddingTop="6dp";
+          buildTagsLayout("权限","permissions");
+          buildTagsLayout("条件","conditions");
+          buildTagsLayout("限制","limitations");
         };
       };
       buildTitleLayout("如何添加到项目内");
@@ -72,15 +48,15 @@
         cardBackgroundColor=getFloatingBgColor();
         {
           HorizontalScrollView;
-        {
-          TextView;
-          id="bodyView";
-          layout_height="wrap";
-          layout_width="fill";
-          padding="16dp";
-          textColor=android.res.color.attr.textColorPrimary;
-          textSize="12sp";
-          textIsSelectable=true;
+          {
+            TextView;
+            id="bodyView";
+            layout_height="wrap";
+            layout_width="fill";
+            padding="16dp";
+            textColor=android.res.color.attr.textColorPrimary;
+            textSize="12sp";
+            textIsSelectable=true;
         };}
       };
     };

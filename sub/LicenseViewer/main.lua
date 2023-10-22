@@ -13,8 +13,15 @@ import "android.text.Html"
 import "android.content.Intent"
 import "android.net.Uri"
 import "java.io.FileWriter"
+import "android.text.SpannableString"
+import "android.graphics.drawable.GradientDrawable"
+import "android.graphics.drawable.LayerDrawable"
+import "android.text.Spannable"
+import "android.text.style.BulletSpan"
+import "android.text.style.DynamicDrawableSpan"
 import "com.onegravity.rteditor.RTEditorMovementMethod"
 
+import "ScaleUtil"
 import "cjson"
 import "res"
 import "layoutHelper"
@@ -167,30 +174,59 @@ function setLoading(state)
   refreshMenus()
 end
 
+---@param key string
+function getI18nText(key)
+  return tags.zh[key] or tags[key] or key
+end
+
+---@param text string
+---@param color number
+function addBulletForLines(text,color)
+  local spannable=SpannableString(text)
+  local textJ=String(text)
+  local index=0
+  while index>=0 do
+    local bulletSpan=BulletSpan(ScaleUtil.dp2px(4), color, ScaleUtil.dp2px(6))
+    spannable.setSpan(bulletSpan, index, index+1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    index=textJ.indexOf("\n",index)+1
+    if index==0 then
+      break
+    end
+  end
+  return spannable
+end
+
+---@param text string
+function fixRelativeUrl(text)
+  return text:gsub([[<a(.-)href="/(.-)"(.-)>]],function(start,url,_end)
+    return ([[<a%shref="%s%s"%s>]]):format(start,URL_CHOOSEALICENSE,url,_end)
+  end)
+end
+
 ---设置数据
 ---@param data LicenseDetails
 function setData(data)
   licenseData=data
-  data.description=data.description:gsub([[<a(.-)href="/(.-)"(.-)>]],function(start,url,_end)
-    return ([[<a%shref="%s%s"%s>]]):format(start,URL_CHOOSEALICENSE,url,_end)
-  end)
-  data.implementation=data.implementation:gsub([[<a(.-)href="/(.-)"(.-)>]],function(start,url,_end)
-    return ([[<a%shref="%s%s"%s>]]):format(start,URL_CHOOSEALICENSE,url,_end)
-  end)
+  data.description=fixRelativeUrl(data.description)
+  data.implementation=fixRelativeUrl(data.implementation)
   activity.setTitle(data.spdx_id)
   descriptionView.text=Html.fromHtml((data.description))
   implementationView.text=Html.fromHtml(translate(data.implementation))
 
   bodyView.text=data.body:gsub("\n*$",""):gsub("^\n*","")
 
-  for index,content in ipairs(data.permissions)
-    permissionsLayout.addView(loadlayout(buildTagLayout(tags.zh[content] or tags[content] or content,0xff4caf50),nil,LinearLayout))
-  end
-  for index,content in ipairs(data.conditions)
-    conditionsLayout.addView(loadlayout(buildTagLayout(tags.zh[content] or tags[content] or content,0xff2196f3),nil,LinearLayout))
-  end
-  for index,content in ipairs(data.limitations)
-    limitationsLayout.addView(loadlayout(buildTagLayout(tags.zh[content] or tags[content] or content,0xfff44336),nil,LinearLayout))
+  local tags={
+    {data.permissions,0xff4caf50,permissionsTextView},
+    {data.conditions,0xff2196f3,conditionsTextView},
+    {data.limitations,0xfff44336,limitationsTextView}
+  }
+  for index,content in ipairs(tags) do
+    local newContents={}
+    for index,content in ipairs(content[1])
+      newContents[index]=getI18nText(content)
+    end
+    local text=table.concat(newContents,"\n")
+    content[3].setText(addBulletForLines(text,content[2]))
   end
 end
 
