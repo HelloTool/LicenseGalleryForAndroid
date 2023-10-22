@@ -13,12 +13,12 @@ import "android.text.Html"
 import "android.content.Intent"
 import "android.net.Uri"
 import "java.io.FileWriter"
-
 import "com.onegravity.rteditor.RTEditorMovementMethod"
 
 import "cjson"
 import "res"
 import "layoutHelper"
+import "i18n.tags"
 
 licenseName,licenseKey=...
 
@@ -37,27 +37,6 @@ if Build.VERSION.SDK_INT>=25 then
   descriptionView.setRevealOnFocusHint(false)
   bodyView.setRevealOnFocusHint(false)
 end
-
-tags={
-  ["commercial-use"]="商业用途",
-  modifications="修改",
-  distribution="分配",
-  sublicense="分许可",
-  ["private-use"]="私人使用",
-  ["no-liability"]="无责任",
-  ["include-copyright"]="包含版权",
-  ["patent-use"]="专利使用",
-  ["trademark-use"]="商标使用",
-  warranty="担保",
-  liability="责任",
-  ["include-copyright--source"]="包含版权--来源",
-  ["disclose-source"]="披露来源",
-  ["document-changes"]="文档更改",
-  ["same-license"]="相同许可证",
-  ["same-license--file"]="相同许可证--文件",
-  ["same-license--library"]="相同许可证--库",
-  ["network-use-disclose"]="网络使用公开",
-}
 
 local licenseData={}
 local loading=false
@@ -195,13 +174,13 @@ function setData(data)
   bodyView.text=data.body:gsub("\n*$",""):gsub("^\n*","")
 
   for index,content in ipairs(data.permissions)
-    permissionsLayout.addView(loadlayout(buildTagLayout(tags[content] or content,0xff4caf50),nil,LinearLayout))
+    permissionsLayout.addView(loadlayout(buildTagLayout(tags.zh[content] or tags[content] or content,0xff4caf50),nil,LinearLayout))
   end
   for index,content in ipairs(data.conditions)
-    conditionsLayout.addView(loadlayout(buildTagLayout(tags[content] or content,0xff2196f3),nil,LinearLayout))
+    conditionsLayout.addView(loadlayout(buildTagLayout(tags.zh[content] or tags[content] or content,0xff2196f3),nil,LinearLayout))
   end
   for index,content in ipairs(data.limitations)
-    limitationsLayout.addView(loadlayout(buildTagLayout(tags[content] or content,0xfff44336),nil,LinearLayout))
+    limitationsLayout.addView(loadlayout(buildTagLayout(tags.zh[content] or tags[content] or content,0xfff44336),nil,LinearLayout))
   end
 end
 
