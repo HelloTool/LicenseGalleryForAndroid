@@ -46,7 +46,9 @@ local loadedMenus=false
 
 function onCreateOptionsMenu(menu)
   local copyMenu=menu.addSubMenu(0,ObjIds.copy,0,"复制..")
-  copyMenu.add(0,ObjIds.copyLicense,0,"复制许可证")
+  copyMenu.add(0,ObjIds.copyName,0,"复制名称")
+  copyMenu.add(0,ObjIds.copySdxId,0,"复制 SDX ID")
+  copyMenu.add(0,ObjIds.copyLicense,0,"复制许可证内容")
   copyMenuItem=menu.findItem(ObjIds.copy)
 
   local shareMenu=menu.addSubMenu(0,ObjIds.share,0,"分享..")
@@ -70,6 +72,10 @@ function onOptionsItemSelected(item)
     openInBrowser(licenseData.html_url)
    elseif id==ObjIds.copyLicense then
     copyAndToast(licenseData.body)
+   elseif id==ObjIds.copySdxId then
+    copyAndToast(licenseData.spdx_id)
+   elseif id==ObjIds.copyName then
+    copyAndToast(licenseData.name)
   end
 end
 
