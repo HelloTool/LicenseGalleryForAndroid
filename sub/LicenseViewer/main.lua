@@ -19,6 +19,7 @@ import "android.graphics.drawable.LayerDrawable"
 import "android.text.Spannable"
 import "android.text.style.BulletSpan"
 import "android.text.style.DynamicDrawableSpan"
+import "android.text.util.Linkify"
 import "com.onegravity.rteditor.RTEditorMovementMethod"
 
 import "ScaleUtil"

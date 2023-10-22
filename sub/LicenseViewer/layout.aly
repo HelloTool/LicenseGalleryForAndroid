@@ -48,6 +48,8 @@
         cardBackgroundColor=getFloatingBgColor();
         {
           HorizontalScrollView;
+          layout_height="wrap";
+          layout_width="fill";
           {
             TextView;
             id="bodyView";
@@ -56,6 +58,7 @@
             padding="16dp";
             textColor=android.res.color.attr.textColorPrimary;
             textSize="12sp";
+            autoLinkMask=Linkify.ALL;
             textIsSelectable=true;
         };}
       };
