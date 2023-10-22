@@ -27,6 +27,7 @@ import "res"
 import "layoutHelper"
 import "i18n.tags"
 import "i18n.helper.translate"
+import "ExportToGitHostDialog"
 
 licenseName,licenseKey=...
 
@@ -52,6 +53,11 @@ local loading=false
 local loadedMenus=false
 
 function onCreateOptionsMenu(menu)
+  local exportMenu=menu.addSubMenu(0,ObjIds.export,0,"导出..")
+  exportMenu.add(0,ObjIds.exportLicense,0,"导出许可证")
+  exportMenu.add(0,ObjIds.exportToGitHost,0,"导出到 Git 仓库")
+  exportMenuItem=menu.findItem(ObjIds.export)
+
   local copyMenu=menu.addSubMenu(0,ObjIds.copy,0,"复制..")
   copyMenu.add(0,ObjIds.copyName,0,"复制名称")
   copyMenu.add(0,ObjIds.copySdxId,0,"复制 SDX ID")
@@ -61,7 +67,6 @@ function onCreateOptionsMenu(menu)
   local shareMenu=menu.addSubMenu(0,ObjIds.share,0,"分享..")
   shareMenuItem=menu.findItem(ObjIds.share)
   shareMenu.add(0,ObjIds.shareLicenseContent,0,"分享许可证内容")
-  exportMenuItem=menu.add(0,ObjIds.exportLicense,0,"导出许可证")
   websiteMenuItem=menu.add(0,ObjIds.licenseWebsite,0,"许可证网址")
   loadedMenus=true
   refreshMenus()
@@ -83,6 +88,9 @@ function onOptionsItemSelected(item)
     copyAndToast(licenseData.spdx_id)
    elseif id==ObjIds.copyName then
     copyAndToast(licenseData.name)
+   elseif id==ObjIds.exportToGitHost then
+    ExportToGitHostDialog()
+    :show()
   end
 end
 
