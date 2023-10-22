@@ -19,6 +19,7 @@ import "cjson"
 import "res"
 import "layoutHelper"
 import "i18n.tags"
+import "i18n.helper.translate"
 
 licenseName,licenseKey=...
 
@@ -168,8 +169,8 @@ function setData(data)
   data.implementation=data.implementation:gsub([[<a(.-)href="/(.-)"(.-)>]],function(start,url,_end)
     return ([[<a%shref="%s%s"%s>]]):format(start,URL_CHOOSEALICENSE,url,_end)
   end)
-  descriptionView.text=Html.fromHtml(data.description)
-  implementationView.text=Html.fromHtml(data.implementation)
+  descriptionView.text=Html.fromHtml(translate(data.description))
+  implementationView.text=Html.fromHtml(translate(data.implementation))
 
   bodyView.text=data.body:gsub("\n*$",""):gsub("^\n*","")
 
