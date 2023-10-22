@@ -182,6 +182,9 @@ end
 ---@param text string
 ---@param color number
 function addBulletForLines(text,color)
+  if #text==0 then
+    return nil
+  end
   local spannable=SpannableString(text)
   local textJ=String(text)
   local index=0
@@ -221,12 +224,16 @@ function setData(data)
     {data.limitations,0xfff44336,limitationsTextView}
   }
   for index,content in ipairs(tags) do
-    local newContents={}
-    for index,content in ipairs(content[1])
-      newContents[index]=getI18nText(content)
+    if #content[1]==0 then
+      content[3].setText("无")
+     else
+      local newContents={}
+      for index,content in ipairs(content[1])
+        newContents[index]=getI18nText(content)
+      end
+      local text=table.concat(newContents,"\n")
+      content[3].setText(addBulletForLines(text,content[2]))
     end
-    local text=table.concat(newContents,"\n")
-    content[3].setText(addBulletForLines(text,content[2]))
   end
 end
 
