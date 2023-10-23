@@ -101,6 +101,26 @@ function onActivityResult(requestCode,resultCode,data)
   end
 end
 
+function onConfigurationChanged(newConfig)
+  local screenWidthDp=newConfig.screenWidthDp
+  if screenWidthDp>960 then
+    setLayoutParams(scrollView,{width=ScaleUtil.dp2px(960)})
+   else
+    setLayoutParams(scrollView,{width=-1})
+  end
+  if screenWidthDp>600 then
+    headLayout.setOrientation(LinearLayout.HORIZONTAL)
+    if screenWidthDp>800 then
+      setLayoutParams(tagsCard,{width=ScaleUtil.dp2px(400)})
+     else
+      setLayoutParams(tagsCard,{width=ScaleUtil.dp2px(300)})
+    end
+   else
+    headLayout.setOrientation(LinearLayout.VERTICAL)
+    setLayoutParams(tagsCard,{width=-1})
+  end
+end
+
 function onExportLicenseResult(requestCode,resultCode,data)
   if resultCode == Activity.RESULT_OK then
     local uri = data.getData()
@@ -273,3 +293,11 @@ function handleLicenseDetails(content)
 end
 
 fetchLicenseDetails()
+
+rootLayout.onTouch = function(view, ...)
+  scrollView.onTouchEvent(...)
+  return true
+end
+
+
+onConfigurationChanged(activity.getResources().getConfiguration())

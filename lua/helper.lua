@@ -103,3 +103,11 @@ setmetatable(ObjIds,{__index=function(self,key)
     self[key]=self._id
     return self._id
 end})
+
+function setLayoutParams(view,paramMap)
+  local params=view.getLayoutParams()
+  for key,value in pairs(paramMap) do
+    params[key]=value
+  end
+  view.setLayoutParams(params)
+end

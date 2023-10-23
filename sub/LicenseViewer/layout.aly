@@ -2,37 +2,57 @@
   FrameLayout;
   layout_height="fill";
   layout_width="fill";
+  id="rootLayout";
   {
     ScrollView;
     layout_height="fill";
     layout_width="fill";
+    layout_gravity="center|top";
     id="scrollView";
     {
       LinearLayout;
       layout_height="fill";
       layout_width="fill";
       orientation="vertical";
-      buildTitleLayout("介绍");
-      buildTextLayout(nil,"descriptionView");
+      paddingTop="8dp";
+      paddingBottom="8dp";
+      clipToPadding=false;
       {
-        CardView;
-        layout_height="wrap";
+        LinearLayout;
+        layout_height="fill";
         layout_width="fill";
-        layout_margin="16dp";
-        layout_marginTop="4dp";
-        layout_marginBottom="4dp";
-        cardBackgroundColor=getFloatingBgColor();
-        --contentDescription="权限概览";
+        orientation="vertical";
+        id="headLayout";
         {
           LinearLayout;
+          layout_height="fill";
+          layout_width="fill";
+          orientation="vertical";
+          buildTitleLayout("介绍");
+          buildTextLayout(nil,"descriptionView");
+          id="descriptionLayout";
+          layout_weight=1;
+        };
+        {
+          CardView;
           layout_height="wrap";
           layout_width="fill";
-          padding="8dp";
-          paddingBottom="6dp";
-          paddingTop="6dp";
-          buildTagsLayout("权限","permissions");
-          buildTagsLayout("条件","conditions");
-          buildTagsLayout("限制","limitations");
+          layout_margin="16dp";
+          layout_marginTop="8dp";
+          layout_marginBottom="8dp";
+          cardBackgroundColor=getFloatingBgColor();
+          id="tagsCard";
+          {
+            LinearLayout;
+            layout_height="wrap";
+            layout_width="fill";
+            padding="8dp";
+            paddingBottom="6dp";
+            paddingTop="6dp";
+            buildTagsLayout("权限","permissions");
+            buildTagsLayout("条件","conditions");
+            buildTagsLayout("限制","limitations");
+          };
         };
       };
       buildTitleLayout("如何添加到项目内");
@@ -44,7 +64,8 @@
         layout_height="wrap";
         layout_width="fill";
         layout_margin="16dp";
-        layout_marginTop="4dp";
+        layout_marginTop="8dp";
+        layout_marginBottom="8dp";
         cardBackgroundColor=getFloatingBgColor();
         {
           HorizontalScrollView;
@@ -60,9 +81,11 @@
             textSize="12sp";
             autoLinkMask=Linkify.ALL;
             textIsSelectable=true;
-        };}
+          };
+        };
       };
     };
+
   };
   {
     ProgressBar;

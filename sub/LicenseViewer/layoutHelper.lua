@@ -21,9 +21,10 @@ function buildTextLayout(text,id)
     layout_width="fill";
     id=id;
     text=text;
-    padding="16dp";
-    paddingTop="4dp";
-    paddingBottom="4dp";
+    paddingStart="16dp";
+    paddingEnd="16dp";
+    layout_marginTop="8dp";
+    layout_marginBottom="8dp";
     textSize="14sp";
     textColor=android.res.color.attr.textColorPrimary;
     textIsSelectable=true;
