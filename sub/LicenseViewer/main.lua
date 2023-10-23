@@ -146,8 +146,7 @@ function exportLicense()
 end
 
 function shareLicense()
-  local intent = Intent()
-  intent.setAction(Intent.ACTION_SEND)
+  local intent = Intent(Intent.ACTION_SEND)
   intent.putExtra(Intent.EXTRA_TEXT, licenseData.body)
   intent.putExtra(Intent.EXTRA_TITLE,licenseData.spdx_id)
   intent.setData(activity.getUriForPath(File(luajava.luadir).getParentFile().getParent().."/images/license.png"))
