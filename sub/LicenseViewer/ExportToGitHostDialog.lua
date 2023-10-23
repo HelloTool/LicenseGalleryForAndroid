@@ -37,6 +37,11 @@ function ExportToGitHostDialog.__call(self)
   return self
 end
 
+function ExportToGitHostDialog:setSpdxId(spdxId)
+  self.spdxId=spdxId
+  return self
+end
+
 function ExportToGitHostDialog:create()
   local ids={}
   local builder=AlertDialog.Builder(this)
@@ -50,7 +55,7 @@ function ExportToGitHostDialog:create()
   positiveButton.onClick=function()
     local url=ids.urlEdit.text
     if url:match("^https?://github.com/[^/]+/[^/]+$") then
-      openInBrowser(url.."/community/license/new?template=AGPL-3.0")
+      openInBrowser(url..("/community/license/new?template=%s"):format(string.lower(self.spdxId)))
      else
       ids.urlEdit.setError("请输入正确的仓库地址")
     end

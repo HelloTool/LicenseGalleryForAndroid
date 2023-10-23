@@ -91,6 +91,7 @@ function onOptionsItemSelected(item)
     copyAndToast(licenseData.name)
    elseif id==ObjIds.exportToGitHost then
     ExportToGitHostDialog()
+    :setSpdxId(licenseData.spdx_id)
     :show()
   end
 end
