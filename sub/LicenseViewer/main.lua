@@ -149,7 +149,7 @@ function shareLicense()
   local intent = Intent()
   intent.setAction(Intent.ACTION_SEND)
   intent.putExtra(Intent.EXTRA_TEXT, licenseData.body)
-  intent.putExtra(Intent.EXTRA_TITLE,licenseData.name)
+  intent.putExtra(Intent.EXTRA_TITLE,licenseData.spdx_id)
   intent.setData(activity.getUriForPath(File(luajava.luadir).getParentFile().getParent().."/images/license.png"))
   intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
   activity.startActivity(Intent.createChooser(intent, nil))
@@ -183,11 +183,13 @@ function setLoading(state)
   refreshMenus()
 end
 
+--获取翻译后的标签字符串
 ---@param key string
-function getI18nText(key)
+function getI18nTagText(key)
   return tags.zh[key] or tags[key] or key
 end
 
+---为每一行添加圆点。如果 text 为空，则返回 nil
 ---@param text string
 ---@param color number
 function addBulletForLines(text,color)
@@ -208,6 +210,7 @@ function addBulletForLines(text,color)
   return spannable
 end
 
+---修复相对路径的问题，转换为绝对路径
 ---@param text string
 function fixRelativeUrl(text)
   return text:gsub([[<a(.-)href="/(.-)"(.-)>]],function(start,url,_end)
@@ -238,7 +241,7 @@ function setData(data)
      else
       local newContents={}
       for index,content in ipairs(content[1])
-        newContents[index]=getI18nText(content)
+        newContents[index]=getI18nTagText(content)
       end
       local text=table.concat(newContents,"\n")
       content[3].setText(addBulletForLines(text,content[2]))
