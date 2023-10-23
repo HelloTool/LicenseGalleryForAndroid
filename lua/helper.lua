@@ -111,3 +111,39 @@ function setLayoutParams(view,paramMap)
   end
   view.setLayoutParams(params)
 end
+
+function newTouchChildOnTouchListener(childView)
+  local config=ViewConfiguration.get(childView.getContext())
+  local touchSlop = config.getScaledTouchSlop()
+  local downY=0
+  return View.OnTouchListener({
+    onTouch = function(view, event)
+      local newEvent=event
+      local action=event.action
+      local y=event.getY()
+      if action==MotionEvent.ACTION_DOWN then
+        downY=y
+       elseif action==MotionEvent.ACTION_UP then
+        if math.abs(y-downY)<touchSlop then
+          newEvent.cancel()
+        end
+        downY=0
+      end
+      local thisLocation,childLocation=int[2],int[2]
+      view.getLocationInWindow(thisLocation)
+      childView.getLocationInWindow(childLocation)
+      local offsetY=thisLocation[1]-childLocation[1]
+
+      local thisWidth=view.getWidth()
+      local childWidth=childView.getWidth()
+      local offsetX=-event.getX()+event.getX()*childWidth/thisWidth
+
+      newEvent.offsetLocation(offsetX,offsetY)
+      childView.dispatchTouchEvent(newEvent)
+      newEvent.offsetLocation(-offsetX,-offsetY)
+      childView.cancelPendingInputEvents()
+
+      return true
+    end
+  })
+end

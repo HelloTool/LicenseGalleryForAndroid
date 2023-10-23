@@ -4,12 +4,14 @@ import "android.os.*"
 import "android.widget.*"
 import "android.view.*"
 import "android.text.util.Linkify"
+import "android.graphics.Point"
 import "com.onegravity.rteditor.RTEditorMovementMethod"
 
 import "res"
 import "cjson"
 require "helper"
 require "init"
+import "ScaleUtil"
 
 ---https://docs.github.com/zh/rest/licenses/licenses?apiVersion=2022-11-28#get-all-commonly-used-licenses--status-codes
 URL_API_GITHUB_LICENSES="https://api.github.com/licenses"
@@ -36,6 +38,15 @@ function onOptionsItemSelected(item)
     showAboutDialog()
    elseif id==3 then
     openInBrowser("https://oschina.gitee.io/opensource-guide/guide/第二部分：学习和使用开源项目/第 3 小节：认识开源许可证/")
+  end
+end
+
+function onConfigurationChanged(newConfig)
+  local screenWidthDp=newConfig.screenWidthDp
+  if screenWidthDp>960 then
+    setLayoutParams(mainLayout,{width=ScaleUtil.dp2px(960)})
+   else
+    setLayoutParams(mainLayout,{width=-1})
   end
 end
 
@@ -238,3 +249,6 @@ end
 
 fetchAllLicenses()
 
+rootLayout.setOnTouchListener(newTouchChildOnTouchListener(listView))
+
+onConfigurationChanged(activity.getResources().getConfiguration())

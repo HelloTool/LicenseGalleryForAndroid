@@ -1,6 +1,6 @@
 appname="许可证画廊"
-appver="1.0"
-appcode="1"
+appver="1.1"
+appcode="1199"
 appsdk="15"
 packagename="io.github.jesse205.licensegallery"
 developer="Jesse205"

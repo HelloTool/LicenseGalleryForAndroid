@@ -1,51 +1,59 @@
 {
-  LinearLayout,
-  orientation="vertical",
+  FrameLayout;
   layout_width="fill",
   layout_height="fill",
+  id="rootLayout";
   {
-    LinearLayout;
-    layout_width="fill";
-    paddingStart="12dp";
-    paddingEnd="12dp";
-    paddingTop="8dp";
-    paddingBottom="8dp";
-    clipToPadding=false;
+    LinearLayout,
+    orientation="vertical",
+    layout_width="fill",
+    layout_height="fill",
+    layout_gravity="center|top";
+    id="mainLayout";
     {
-      EditText;
-      layout_weight="1";
-      layout_marginEnd="8dp";
-      singleLine=true;
-      id="searchEdit";
-      hint="搜索许可证...";
-      imeOptions="actionSearch";
+      LinearLayout;
+      layout_width="fill";
+      paddingStart="12dp";
+      paddingEnd="12dp";
+      paddingTop="8dp";
+      paddingBottom="8dp";
+      clipToPadding=false;
+      {
+        EditText;
+        layout_weight="1";
+        layout_marginEnd="8dp";
+        singleLine=true;
+        id="searchEdit";
+        hint="搜索许可证...";
+        imeOptions="actionSearch";
+      };
+      {
+        Button;
+        text="搜索";
+        minimumWidth="64dp";
+        minWidth="64dp";
+        padding=0;
+        id="searchButton";
+      };
     };
     {
-      Button;
-      text="搜索";
-      minimumWidth="64dp";
-      minWidth="64dp";
-      padding=0;
-      id="searchButton";
-    };
-  };
-  {
-    FrameLayout;
-    layout_width="fill";
-    layout_height="fill";
-    {
-      ListView;
+      FrameLayout;
       layout_width="fill";
       layout_height="fill";
-      id="listView";
-      dividerHeight=0;
+      {
+        ListView;
+        layout_width="fill";
+        layout_height="fill";
+        id="listView";
+        dividerHeight=0;
+      };
+      {
+        ProgressBar;
+        layout_width="wrap";
+        layout_height="wrap";
+        id="progressBar";
+        layout_gravity="center";
+      };
     };
-    {
-      ProgressBar;
-      layout_width="wrap";
-      layout_height="wrap";
-      id="progressBar";
-      layout_gravity="center";
-    };
-  };
-}
+  }
+};
