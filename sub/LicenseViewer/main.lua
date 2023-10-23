@@ -294,10 +294,6 @@ end
 
 fetchLicenseDetails()
 
-rootLayout.onTouch = function(view, ...)
-  scrollView.onTouchEvent(...)
-  return true
-end
-
+rootLayout.setOnTouchListener(newTouchChildOnTouchListener(scrollView))
 
 onConfigurationChanged(activity.getResources().getConfiguration())
