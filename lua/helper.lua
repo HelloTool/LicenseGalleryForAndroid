@@ -125,7 +125,7 @@ function newTouchChildOnTouchListener(childView)
         downY=y
        elseif action==MotionEvent.ACTION_UP then
         if math.abs(y-downY)<touchSlop then
-          newEvent.cancel()
+          newEvent.setAction(MotionEvent.ACTION_CANCEL)
         end
         downY=0
       end
